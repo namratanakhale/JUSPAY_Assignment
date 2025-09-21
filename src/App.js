@@ -19,11 +19,26 @@ function App() {
   const [currentOrderPage, setCurrentOrderPage] = useState(1);
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const ordersPerPage = 5;
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+  };
+
+  // Helper function to get image path based on theme
+  const getImagePath = (imagePath) => {
+    if (isDarkTheme && imagePath.endsWith('.svg')) {
+      return imagePath.replace('.svg', '_w.svg');
+    }
+    return imagePath;
   };
 
   const toggleSidebar = (e) => {
@@ -71,7 +86,7 @@ function App() {
   ];
 
   // Search filtering logic
-  const filteredOrders = allOrders.filter(order => {
+  let filteredOrders = allOrders.filter(order => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -80,16 +95,56 @@ function App() {
     );
   });
 
+  // Sorting logic
+  if (sortBy) {
+    filteredOrders = [...filteredOrders].sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (sortBy) {
+        case 'id':
+          aValue = a.id.toLowerCase();
+          bValue = b.id.toLowerCase();
+          break;
+        case 'user':
+          aValue = a.user.name.toLowerCase();
+          bValue = b.user.name.toLowerCase();
+          break;
+        case 'project':
+          aValue = a.project.toLowerCase();
+          bValue = b.project.toLowerCase();
+          break;
+        case 'address':
+          aValue = a.address.toLowerCase();
+          bValue = b.address.toLowerCase();
+          break;
+        case 'date':
+          aValue = new Date(a.date);
+          bValue = new Date(b.date);
+          break;
+        case 'status':
+          aValue = a.status.toLowerCase();
+          bValue = b.status.toLowerCase();
+          break;
+        default:
+          return 0;
+      }
+      
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
   // Pagination logic with filtered results
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
   const startIndex = (currentOrderPage - 1) * ordersPerPage;
   const endIndex = startIndex + ordersPerPage;
   const currentOrders = filteredOrders.slice(startIndex, endIndex);
 
-  // Reset to page 1 when search term changes
+  // Reset to page 1 when search term or sort changes
   React.useEffect(() => {
     setCurrentOrderPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, sortBy, sortOrder]);
 
   const handlePageChange = (page) => {
     setCurrentOrderPage(page);
@@ -133,6 +188,16 @@ function App() {
     setSearchTerm(e.target.value);
   };
 
+  // Sort function
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('asc');
+    }
+  };
+
   // Check if all current page orders are selected
   const isAllSelected = currentOrders.length > 0 && currentOrders.every(order => selectedOrders.has(order.id));
   const isIndeterminate = currentOrders.some(order => selectedOrders.has(order.id)) && !isAllSelected;
@@ -145,7 +210,7 @@ function App() {
     { name: 'Singapore', position: [1.3521, 103.8198], revenue: '61K' }
   ];
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
       {/* Left Sidebar */}
       <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
@@ -154,7 +219,7 @@ function App() {
             <span className="brand-text">ByeWind</span>
           </div>
           <button className="sidebar-close" onClick={toggleSidebar}>
-            <img src='/images/close.svg' alt='close' />
+            <img src={getImagePath('/images/close.svg')} alt='close' />
           </button>
         </div>
 
@@ -180,7 +245,7 @@ function App() {
                 className={currentPage === 'default' ? 'active' : ''}
                 onClick={() => navigateToPage('default')}
               >
-                <img src='/images/default.svg' alt='default' />
+                <img src={getImagePath('/images/default.svg')} alt='default' />
                 <span>Default</span>
               </li>
               <li 
@@ -188,17 +253,17 @@ function App() {
                 onClick={() => navigateToPage('ecommerce')}
               >
                 <span className="nav-arrow">›</span>
-                <img src='/images/bag.svg' alt='bag' />
+                <img src={getImagePath('/images/bag.svg')} alt='bag' />
                 <span>eCommerce</span>
               </li>
               <li>
                 <span className="nav-arrow">›</span>
-                <img src='/images/folder.svg' alt='folder' />
+                <img src={getImagePath('/images/folder.svg')} alt='folder' />
                 <span>Projects</span>
               </li>
               <li>
                 <span className="nav-arrow">›</span>
-                <img src='/images/course.svg' alt='book' />
+                <img src={getImagePath('/images/course.svg')} alt='book' />
                 <span>Online Courses</span>
               </li>
             </ul>
@@ -209,7 +274,7 @@ function App() {
             <ul>
               <li>
                 <span className="nav-arrow">⌄</span>
-                <img src='/images/profile.svg' alt='user' />
+                <img src={getImagePath('/images/profile.svg')} alt='user' />
                 <span>User Profile</span>
               </li>
               <li>
@@ -234,22 +299,22 @@ function App() {
               </li>
               <li>
                 <span className="nav-arrow">›</span>
-                <img src='/images/account.svg' alt='user' />
+                <img src={getImagePath('/images/account.svg')} alt='user' />
                 <span>Account</span>
               </li>
               <li>
                 <span className="nav-arrow">›</span>
-                <img src='/images/corporate.svg' alt='corporate' />
+                <img src={getImagePath('/images/corporate.svg')} alt='corporate' />
                 <span>Corporate</span>
               </li>
               <li>
                 <span className="nav-arrow">›</span>
-                <img src='/images/blog.svg' alt='blog' />
+                <img src={getImagePath('/images/blog.svg')} alt='blog' />
                 <span>Blog</span>
               </li>
               <li>
                 <span className="nav-arrow">›</span>
-                <img src='/images/social.svg' alt='social' />
+                <img src={getImagePath('/images/social.svg')} alt='social' />
                 <span>Social</span>
               </li>
             </ul>
@@ -263,9 +328,9 @@ function App() {
           <header className="top-header">
             <div className="breadcrumb">
               <button className="hamburger-menu" onClick={toggleSidebar} style={{display: 'block'}}>
-                <img src='/images/sidebar.svg' alt='menu' />
+                <img src={getImagePath('/images/sidebar.svg')} alt='menu' />
               </button>
-              <div className="hamburger-icon"><img src='/images/star.svg' alt='star' /></div>
+              <div className="hamburger-icon"><img src={getImagePath('/images/star.svg')} alt='star' /></div>
               <span className="breadcrumb-text">Dashboards</span>
               <span className="separator">/</span>
               <span className="current-page">
@@ -276,7 +341,7 @@ function App() {
           
           <div className="header-center">
             <div className="search-bar">
-              <span className="search-icon"><img src='/images/search.svg' /></span>
+              <span className="search-icon"><img src={getImagePath('/images/search.svg')} /></span>
               <input type="text" placeholder="Search" />
               <span className="keyboard-shortcut">⌘/</span>
             </div>
@@ -284,10 +349,12 @@ function App() {
           
           <div className="header-right">
             <div className="utility-icons">
-              <div className="utility-icon"><img src='/images/light_theme.svg' /></div>
-              <div className="utility-icon"><img src='/images/refresh.svg' /></div>
-              <div className="utility-icon" onClick={toggleDrawer}><img src='/images/bell.svg' /></div>
-              <div className="utility-icon"><img src='/images/sidebar.svg' /></div>
+                <div className="utility-icon" onClick={toggleTheme}>
+                  <img src={getImagePath('/images/light_theme.svg')} alt={isDarkTheme ? 'dark theme' : 'light theme'} />
+                </div>
+              <div className="utility-icon"><img src={getImagePath('/images/refresh.svg')} /></div>
+              <div className="utility-icon" onClick={toggleDrawer}><img src={getImagePath('/images/bell.svg')} /></div>
+              <div className="utility-icon"><img src={getImagePath('/images/sidebar.svg')} /></div>
             </div>
           </div>
         </header>
@@ -296,18 +363,22 @@ function App() {
         <div className="dashboard-content">
           {currentPage === 'default' ? (
             <>
-              <div className="content-header">
+             
                 <div className="title-section">
-                  <h1>Order List</h1>
+                  <p className='title_text'>Order List</p>
                 </div>
-                <div className='space_betn'>
+                <div className="content-header">
+                <div className='space_betn light_bg'>
                 <div className='hamburger-icon'>
-                  <img src='/images/plus.svg' alt='plus' />
-                  <img src='/images/filter.svg' alt='filter' />
-                  <img src='/images/sort.svg' alt='sort' />
+                  <img src={getImagePath('/images/plus.svg')} alt='plus' />
+                  <img src={getImagePath('/images/filter.svg')} alt='filter' />
+                  <div className="tooltip-container">
+                    <img src={getImagePath('/images/sort.svg')} alt='sort' />
+                    <span className="tooltip">Please click on table header to sort</span>
+                  </div>
                 </div>
                  <div className="search-bar">
-               <span className="search-icon"><img src='/images/search.svg' /></span>
+               <span className="search-icon"><img src={getImagePath('/images/search.svg')} /></span>
                <input 
                  type="text" 
                  placeholder="Search by Order ID or User name..." 
@@ -341,12 +412,54 @@ function App() {
                           onChange={(e) => handleSelectAll(e.target.checked)}
                         />
                       </th>
-                      <th>Order ID</th>
-                      <th>User</th>
-                      <th>Project</th>
-                      <th>Address</th>
-                      <th>Date</th>
-                      <th>Status</th>
+                      <th className="sortable" onClick={() => handleSort('id')}>
+                        Order ID
+                        {sortBy === 'id' && (
+                          <span className="sort-icon">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </th>
+                      <th className="sortable" onClick={() => handleSort('user')}>
+                        User
+                        {sortBy === 'user' && (
+                          <span className="sort-icon">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </th>
+                      <th className="sortable" onClick={() => handleSort('project')}>
+                        Project
+                        {sortBy === 'project' && (
+                          <span className="sort-icon">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </th>
+                      <th className="sortable" onClick={() => handleSort('address')}>
+                        Address
+                        {sortBy === 'address' && (
+                          <span className="sort-icon">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </th>
+                      <th className="sortable" onClick={() => handleSort('date')}>
+                        Date
+                        {sortBy === 'date' && (
+                          <span className="sort-icon">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </th>
+                      <th className="sortable" onClick={() => handleSort('status')}>
+                        Status
+                        {sortBy === 'status' && (
+                          <span className="sort-icon">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -377,11 +490,11 @@ function App() {
                         </td>
                         <td>
                           <div className="date-cell">
-                            <img src='/images/calender.svg' alt='calendar' /> {order.date}
+                            <img src={getImagePath('/images/calender.svg')} alt='calendar' /> {order.date}
                           </div>
                         </td>
                         <td>
-                          <div className="status-cell">
+                          <div className={`status-cell ${getStatusClass(order.status)}`}>
                             <span className={`status-dot ${getStatusClass(order.status)}`}></span>
                             {order.status}
                           </div>
@@ -456,7 +569,7 @@ function App() {
                     <div className="kpi-value">1,219</div>
                     <div className="kpi-change">
                     -0.03%
-                    <img src='/images/arrow_fall.svg' alt='arrow_up' />
+                    <img src={getImagePath('/images/arrow_fall.svg')} alt='arrow_up' />
                     </div>
                     </div>
                   </div>
@@ -466,7 +579,7 @@ function App() {
                     <div className="kpi-value">$695</div>
                     <div className="kpi-change">
                     +15.03%
-                    <img src='/images/up_arrow.svg' alt='arrow_up' />
+                    <img src={getImagePath('/images/up_arrow.svg')} alt='arrow_up' />
                     </div>
                     </div>
                   </div>
@@ -590,16 +703,18 @@ function App() {
               <div className="revenue-charts-section">
                  {/* Revenue Line Chart */}
                  <div className="revenue-chart-container">
+                 <div className='brand-section gap_2rem'>
                   <h3>Revenue</h3>
                   <div className="revenue-legend">
                     <div className="legend-item">
-                      <div className="legend-dot current-week"></div>
-                      <span>Current Week $58,211</span>
+                      <div className="legend-dot current-week" style={{backgroundColor: isDarkTheme ? '#ffffff' : '#1C1C1C'}}></div>
+                      <span><span className='font_400 black_c legend_w'>Current Week</span> <span className='font_600 black_c legend_w'>$58,211</span></span>
                     </div>
                     <div className="legend-item">
                       <div className="legend-dot previous-week"></div>
-                      <span>Previous Week $68,768</span>
+                      <span><span className='font_400 black_c legend_w'>Previous Week</span> <span className='font_600 black_c legend_w'>$68,768</span></span>
                     </div>
+                  </div>
                   </div>
                   <div className="revenue-chart-wrapper">
                     <Chart
@@ -644,7 +759,7 @@ function App() {
                             }
                           }
                         },
-                        colors: ['#1C1C1C', '#A8C5DA'],
+                        colors: [isDarkTheme ? '#ffffff' : '#1C1C1C', '#A8C5DA'],
                         grid: {
                           show: true,
                           borderColor: '#f0f0f0',
@@ -664,6 +779,10 @@ function App() {
                           show: false
                         },
                         tooltip: {
+                          theme: isDarkTheme ? 'dark' : 'light',
+                          style: {
+                            fontSize: '12px'
+                          },
                           y: {
                             formatter: function (val) {
                               return val + 'M'
@@ -836,7 +955,7 @@ function App() {
                           dataLabels: {
                             enabled: false
                           },
-                          colors: ['#1C1C1C', '#BAEDBD', '#95A4FC', '#B1E3FF', '#333'],
+                          colors: [isDarkTheme ? '#C6C7F8' : '#1C1C1C', '#BAEDBD', '#95A4FC', '#B1E3FF', '#333'],
                           legend: {
                             show: false
                           },
@@ -898,28 +1017,28 @@ function App() {
                 <h3 className="drawer-heading">Notifications</h3>
                 <div className="notification-list">
                   <div className="notification-item">
-                    <img src='/images/bug.svg' alt='bug' />
+                    <img src={getImagePath('/images/bug.svg')} alt='bug' />
                     <div className="notification-content">
                       <div className="notification-text">You have a bug that needs...</div>
                       <div className="notification-time">Just now</div>
                     </div>
                   </div>
                   <div className="notification-item">
-                  <img src='/images/user.svg' alt='user' />
+                  <img src={getImagePath('/images/user.svg')} alt='user' />
                     <div className="notification-content">
                       <div className="notification-text">New user registered</div>
                       <div className="notification-time">59 minutes ago</div>
                     </div>
                   </div>
                   <div className="notification-item">
-                  <img src='/images/bug.svg' alt='bug' />
+                  <img src={getImagePath('/images/bug.svg')} alt='bug' />
                     <div className="notification-content">
                       <div className="notification-text">You have a bug that needs...</div>
                       <div className="notification-time">12 hours ago</div>
                     </div>
                   </div>
                   <div className="notification-item">
-                  <img src='/images/lane.svg' alt='lane' />
+                  <img src={getImagePath('/images/lane.svg')} alt='lane' />
                     <div className="notification-content">
                       <div className="notification-text">Andi Lane subscribed to you</div>
                       <div className="notification-time">Today, 11:59 AM</div>
@@ -933,35 +1052,35 @@ function App() {
                 <h3 className="drawer-heading">Activities</h3>
                 <div className="activity-list">
                   <div className="activity-item">
-                  <img src='/images/act1.svg' alt='act1' />
+                  <img src={getImagePath('/images/act1.svg')} alt='act1' />
                     <div className="activity-content">
                       <div className="activity-text">You have a bug that needs...</div>
                       <div className="activity-time">Just now</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src='/images/act2.svg' alt='act2' />
+                  <img src={getImagePath('/images/act2.svg')} alt='act2' />
                     <div className="activity-content">
                       <div className="activity-text">Released a new version</div>
                       <div className="activity-time">59 minutes ago</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src='/images/act3.svg' alt='act3' />
+                  <img src={getImagePath('/images/act3.svg')} alt='act3' />
                     <div className="activity-content">
                       <div className="activity-text">Submitted a bug</div>
                       <div className="activity-time">12 hours ago</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src='/images/act4.svg' alt='act4' />
+                  <img src={getImagePath('/images/act4.svg')} alt='act4' />
                     <div className="activity-content">
                       <div className="activity-text">Modified A data in Page X</div>
                       <div className="activity-time">Today, 11:59 AM</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src='/images/act5.svg' alt='act5' />
+                  <img src={getImagePath('/images/act5.svg')} alt='act5' />
                     <div className="activity-content">
                       <div className="activity-text">Deleted a page in Project X</div>
                       <div className="activity-time">Feb 2, 2023</div>
@@ -975,27 +1094,27 @@ function App() {
                 <h3 className="drawer-heading">Contacts</h3>
                 <div className="contact-list">
                   <div className="contact-item">
-                  <img src='/images/a1.svg' alt='a1' />
+                  <img src={getImagePath('/images/a1.svg')} alt='a1' />
                     <span className="contact-name">Natali Craig</span>
                   </div>
                   <div className="contact-item">
-                  <img src='/images/a5.svg' alt='a5' />
+                  <img src={getImagePath('/images/a5.svg')} alt='a5' />
                     <span className="contact-name">Drew Cano</span>
                   </div>
                   <div className="contact-item">
-                  <img src='/images/a4.svg' alt='a4' />
+                  <img src={getImagePath('/images/a4.svg')} alt='a4' />
                     <span className="contact-name">Orlando Diggs</span>
                   </div>
                   <div className="contact-item">
-                  <img src='/images/a3.svg' alt='a3' />
+                  <img src={getImagePath('/images/a3.svg')} alt='a3' />
                     <span className="contact-name">Andi Lane</span>
                   </div>
                   <div className="contact-item">
-                  <img src='/images/a2.svg' alt='a2' />
+                  <img src={getImagePath('/images/a2.svg')} alt='a2' />
                     <span className="contact-name">Kate Morrison</span>
                   </div>
                   <div className="contact-item">
-                  <img src='/images/a1.svg' alt='a1' />
+                  <img src={getImagePath('/images/a1.svg')} alt='a1' />
                     <span className="contact-name">Koray Okumus</span>
                   </div>
                 </div>
