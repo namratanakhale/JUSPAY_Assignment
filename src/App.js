@@ -218,9 +218,6 @@ function App() {
             <img src="/images/avatara.svg" alt='avatar'/>
             <span className="brand-text">ByeWind</span>
           </div>
-          <button className="sidebar-close" onClick={toggleSidebar}>
-            <img src={getImagePath('/images/close.svg')} alt='close' />
-          </button>
         </div>
 
         <nav className="navigation">
@@ -354,7 +351,7 @@ function App() {
                 </div>
               <div className="utility-icon"><img src={getImagePath('/images/refresh.svg')} /></div>
               <div className="utility-icon" onClick={toggleDrawer}><img src={getImagePath('/images/bell.svg')} /></div>
-              <div className="utility-icon"><img src={getImagePath('/images/sidebar.svg')} /></div>
+              <div className="utility-icon media_display_none"><img src={getImagePath('/images/sidebar.svg')} /></div>
             </div>
           </div>
         </header>
@@ -369,7 +366,7 @@ function App() {
                 </div>
                 <div className="content-header">
                 <div className='space_betn light_bg'>
-                <div className='hamburger-icon'>
+                <div className='hamburger-icon media_display_none'>
                   <img src={getImagePath('/images/plus.svg')} alt='plus' />
                   <img src={getImagePath('/images/filter.svg')} alt='filter' />
                   <div className="tooltip-container">
