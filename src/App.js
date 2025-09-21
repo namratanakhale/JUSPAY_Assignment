@@ -1017,14 +1017,14 @@ function App() {
                 <h3 className="drawer-heading">Notifications</h3>
                 <div className="notification-list">
                   <div className="notification-item">
-                    <img src={getImagePath('/images/bug.svg')} alt='bug' />
+                    <img src='/images/bug.svg' alt='bug' />
                     <div className="notification-content">
                       <div className="notification-text">You have a bug that needs...</div>
                       <div className="notification-time">Just now</div>
                     </div>
                   </div>
                   <div className="notification-item">
-                  <img src={getImagePath('/images/user.svg')} alt='user' />
+                  <img src='/images/user.svg' alt='user' />
                     <div className="notification-content">
                       <div className="notification-text">New user registered</div>
                       <div className="notification-time">59 minutes ago</div>
@@ -1038,7 +1038,7 @@ function App() {
                     </div>
                   </div>
                   <div className="notification-item">
-                  <img src={getImagePath('/images/lane.svg')} alt='lane' />
+                  <img src='/images/lane.svg' alt='lane' />
                     <div className="notification-content">
                       <div className="notification-text">Andi Lane subscribed to you</div>
                       <div className="notification-time">Today, 11:59 AM</div>
@@ -1052,35 +1052,35 @@ function App() {
                 <h3 className="drawer-heading">Activities</h3>
                 <div className="activity-list">
                   <div className="activity-item">
-                  <img src={getImagePath('/images/act1.svg')} alt='act1' />
+                  <img src='/images/act1.svg' alt='act1' />
                     <div className="activity-content">
                       <div className="activity-text">You have a bug that needs...</div>
                       <div className="activity-time">Just now</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src={getImagePath('/images/act2.svg')} alt='act2' />
+                  <img src='/images/act2.svg' alt='act2' />
                     <div className="activity-content">
                       <div className="activity-text">Released a new version</div>
                       <div className="activity-time">59 minutes ago</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src={getImagePath('/images/act3.svg')} alt='act3' />
+                  <img src='/images/act3.svg' alt='act3' />
                     <div className="activity-content">
                       <div className="activity-text">Submitted a bug</div>
                       <div className="activity-time">12 hours ago</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src={getImagePath('/images/act4.svg')} alt='act4' />
+                  <img src='/images/act4.svg' alt='act4' />
                     <div className="activity-content">
                       <div className="activity-text">Modified A data in Page X</div>
                       <div className="activity-time">Today, 11:59 AM</div>
                     </div>
                   </div>
                   <div className="activity-item">
-                  <img src={getImagePath('/images/act5.svg')} alt='act5' />
+                  <img src='/images/act5.svg' alt='act5' />
                     <div className="activity-content">
                       <div className="activity-text">Deleted a page in Project X</div>
                       <div className="activity-time">Feb 2, 2023</div>
@@ -1094,27 +1094,27 @@ function App() {
                 <h3 className="drawer-heading">Contacts</h3>
                 <div className="contact-list">
                   <div className="contact-item">
-                  <img src={getImagePath('/images/a1.svg')} alt='a1' />
+                  <img src='/images/a1.svg' alt='a1' />
                     <span className="contact-name">Natali Craig</span>
                   </div>
                   <div className="contact-item">
-                  <img src={getImagePath('/images/a5.svg')} alt='a5' />
+                  <img src='/images/a5.svg' alt='a5' />
                     <span className="contact-name">Drew Cano</span>
                   </div>
                   <div className="contact-item">
-                  <img src={getImagePath('/images/a4.svg')} alt='a4' />
+                  <img src='/images/a4.svg' alt='a4' />
                     <span className="contact-name">Orlando Diggs</span>
                   </div>
                   <div className="contact-item">
-                  <img src={getImagePath('/images/a3.svg')} alt='a3' />
+                  <img src='/images/a3.svg' alt='a3' />
                     <span className="contact-name">Andi Lane</span>
                   </div>
                   <div className="contact-item">
-                  <img src={getImagePath('/images/a2.svg')} alt='a2' />
+                  <img src='/images/a2.svg' alt='a2' />
                     <span className="contact-name">Kate Morrison</span>
                   </div>
                   <div className="contact-item">
-                  <img src={getImagePath('/images/a1.svg')} alt='a1' />
+                  <img src='/images/a1.svg' alt='a1' />
                     <span className="contact-name">Koray Okumus</span>
                   </div>
                 </div>
