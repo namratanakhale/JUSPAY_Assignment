@@ -1667,9 +1667,7 @@ body {
   }
 
   .header-center {
-    order: 3;
-    width: auto !important;
-    margin-top: 10px;
+    display: none !important;
   }
 
   .search-bar {
@@ -1701,7 +1699,9 @@ body {
     justify-content: center;
     gap: 10px;
   }
-
+.media_display_none {
+  display: none !important;
+}
   /* Charts responsive */
   .charts-section {
     grid-template-columns: 1fr;
