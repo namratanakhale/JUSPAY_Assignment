@@ -189,7 +189,7 @@ body {
   background: white;
   padding: 16px 24px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid #e9ecef;
   height: 64px;
@@ -842,6 +842,9 @@ body {
 
 .drawer-content {
   padding: 24px;
+}
+.dark-theme .drawer-content {
+  background-color: #2d2d2d;
 }
 
 .drawer-section {
@@ -1636,6 +1639,9 @@ body {
 
 @media (max-width: 768px) {
   /* Mobile adjustments */
+  .media_display_none{
+    display: none !important;
+  }
   .main-content {
     padding: 10px;
   }
@@ -1662,7 +1668,7 @@ body {
 
   .header-center {
     order: 3;
-    width: 100%;
+    width: auto !important;
     margin-top: 10px;
   }
 
@@ -1932,7 +1938,9 @@ body {
   color: #ffffff;
   border-right-color: #404040;
 }
-
+.dark-theme .drawer-heading {
+  color: #ffffff !important;
+}
 .dark-theme .sidebar-header {
   border-bottom-color: #404040;
 }
@@ -1987,6 +1995,9 @@ body {
 }
 
 .dark-theme .hamburger-menu:hover {
+  background-color: #555555;
+}
+.dark-theme .contact-item:hover {
   background-color: #555555;
 }
 .dark-theme .utility-icon:hover {
